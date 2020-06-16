@@ -1,0 +1,71 @@
+version: '3.7'
+
+services:
+
+  php:
+    build: ./php
+    volumes:
+      - ./html:/var/www/html
+    links:
+      - mysql
+    environment:
+      DATABASE_HOST: 'mysql'
+      DATABASE_NAME: 'games'
+      DATABASE_USER: 'test_user'
+      DATABASE_PASSWORD: '123456'
+    container_name: php
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./html:/var/www/html
+      - ./nginx/error.log:/var/log/nginx/error.log
+    depends_on:
+      - php
+    links:
+      - php
+    container_name: nginx
+
+  mysql:
+    image: mysql:5.7 #8?
+    environment:
+      MYSQL_ROOT_PASSWORD: '123456'
+      MYSQL_DATABASE: 'sword'
+      MYSQL_USER: 'test_user'
+      MYSQL_PASSWORD: '123456'
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/misc/mysql-files:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+    container_name: mysql
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    environment:
+      - RABBITMQ_ERLANG_COOKIE='mysupersecretcookie'
+    hostname: "rabbit"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    labels:
+      NAME: "rabbitmq"
+    volumes:
+      - ./rabbitmq/rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
+    container_name: rabbitmq
+
+  redis:
+    image: redis:4-alpine
+    depends_on:
+      - php
+    container_name: redis
+
+  memcached:
+    image: 'bitnami/memcached:1'
+    ports:
+      - '11211:11211'
+    depends_on:
+      - php
+    container_name: memcached
