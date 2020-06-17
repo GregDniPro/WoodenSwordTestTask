@@ -13,8 +13,8 @@ use Illuminate\Validation\ValidationException;
  *
  * @package App\Http\Requests\Api
  *
- * @property string $displayName
- * @property string|null $auto
+ * @property string $display_name
+ * @property int|null $auto
  */
 class CreatePlayerRequest extends FormRequest
 {
