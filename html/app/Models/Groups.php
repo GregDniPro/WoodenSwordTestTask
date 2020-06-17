@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
  *
  * @property int $id
  * @property string $label
+ * @property int $weight
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @method static Builder|Groups newModelQuery()
@@ -35,5 +36,5 @@ class Groups extends Model
      *
      * @var string[]
      */
-    protected $fillable = ['label'];
+    protected $fillable = ['label', 'weight'];
 }

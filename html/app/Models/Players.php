@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
  *
  * @property int $id
  * @property string $display_name
+ * @property int $group_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @method static Builder|Players newModelQuery()
@@ -35,5 +36,5 @@ class Players extends Model
      *
      * @var string[]
      */
-    protected $fillable = ['display_name'];
+    protected $fillable = ['display_name', 'group_id'];
 }

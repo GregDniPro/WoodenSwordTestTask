@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\CreatePlayerRequest;
+use App\Models\Groups;
 use App\Models\Players;
 use DB;
 use Illuminate\Http\JsonResponse;
@@ -31,6 +32,14 @@ class CreatePlayerController extends Controller
                 $player->update(['display_name' => $this->getAutoDisplayName($player)]);
             }
             //TODO auto-groups logic here
+            $currentContextAutoGroups = Groups::where('weight', '!=', 0)
+                ->get()
+                ->pluck('weight', 'id')
+                ->toArray();
+            if (!empty($currentContextAutoGroups)) {
+                $player->update(['group_id' => $this->getRandomWeightedElement($currentContextAutoGroups)]);
+            }
+            //TODO auto-groups logic here
         } catch (Throwable $e) {
             DB::rollBack();
             return response()->json([
@@ -45,6 +54,26 @@ class CreatePlayerController extends Controller
             'status' => Response::HTTP_OK,
             'message' => 'Player was successfully created!',
         ], Response::HTTP_OK);
+    }
+
+    /**
+     * TODO maybe i should move it to service
+     *
+     * @param array $weightedValues
+     * @return int|string TODO
+     */
+    private function getRandomWeightedElement(array $weightedValues)
+    {
+        $rand = mt_rand(1, (int)array_sum($weightedValues));
+
+        foreach ($weightedValues as $key => $value) {
+            $rand -= $value;
+            if ($rand <= 0) {
+                return $key;
+            }
+        }
+
+        return null;
     }
 
     /**
