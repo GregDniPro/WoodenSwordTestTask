@@ -1,4 +1,4 @@
-# Docker for Phonexa TestTask project.
+# Docker for WoodenSword TestTask project.
 
 First of all install 'Docker' & 'docker-compose' for your system!
 - https://www.docker.com/get-docker
