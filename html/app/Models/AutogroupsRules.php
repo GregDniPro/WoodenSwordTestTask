@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
- * Class Players
+ * Class AutogroupsRules
  *
  * @package App\Models
  *
  * @property int $id
- * @property string $display_name
- * @property int $autogroup_id
+ * @property int $group_id
+ * @property int $weight
+ * @property string $labelSecured
  * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
  * @method static Builder|Players newModelQuery()
  * @method static Builder|Players newQuery()
  * @method static Builder|Players query()
@@ -27,7 +27,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Players whereUpdatedAt($value)
  * @mixin Eloquent
  */
-class Players extends Model
+class AutogroupsRules extends Model
 {
     use HasTimestamps;
 
@@ -36,5 +36,5 @@ class Players extends Model
      *
      * @var string[]
      */
-    protected $fillable = ['display_name', 'autogroup_id'];
+    protected $fillable = ['group_id', 'weight'];
 }
