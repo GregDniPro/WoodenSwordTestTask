@@ -18,8 +18,7 @@ class CreateGroupsTable extends Migration
     {
         Schema::create('groups', static function (Blueprint $table): void {
             $table->id();
-            $table->string('label');
-            $table->unsignedSmallInteger('weight')->nullable(true)->default(null);
+            $table->string('label')->nullable(false);
             $table->timestamps();
         });
     }

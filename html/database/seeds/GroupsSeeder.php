@@ -5,6 +5,8 @@ use Illuminate\Database\Seeder;
 
 class GroupsSeeder extends Seeder
 {
+    private const DUMMY_CONST_COUNT = 30;
+
     /**
      * Run the database seeds.
      *
@@ -14,7 +16,7 @@ class GroupsSeeder extends Seeder
     {
         DB::table('groups')->truncate();
 
-        for ($i = 1; $i < 11; $i++) {
+        for ($i = 1; $i < (self::DUMMY_CONST_COUNT + 1); $i++) {
             Groups::create(['label' => "Group #$i"]);
         }
     }
