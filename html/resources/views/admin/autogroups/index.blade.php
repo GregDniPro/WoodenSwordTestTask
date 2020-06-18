@@ -1,9 +1,5 @@
 @extends('admin.layout')
 
-@section('css')
-    <link rel="stylesheet" href="{{ asset('assets/chosen/chosen.css') }}">
-@endsection
-
 @php
     /** @var Illuminate\Database\Eloquent\Collection $autoGroups */
     /** @var Illuminate\Database\Eloquent\Collection $allGroups */
@@ -12,8 +8,12 @@
     $weightSum = array_sum(array_column($autoGroups->toArray(), 'weight'));
 @endphp
 
+@section('css')
+    <link rel="stylesheet" href="{{ asset('assets/chosen/chosen.css') }}">
+@endsection
+
 @section('content')
-    <div class="col-lg-12" style="display: block;">
+    <div class="col-lg-12">
         <div class="row">
             <div class="col-lg-3 text-right">
             </div>
