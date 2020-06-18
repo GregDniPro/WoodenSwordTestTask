@@ -49,6 +49,8 @@ class AdminPanelController extends Controller
     /**
      * @param SetAutoGroupsRequest $request
      * @return JsonResponse
+     *
+     * @throws Throwable
      */
     public function setAutoGroups(SetAutoGroupsRequest $request): JsonResponse
     {
@@ -75,6 +77,8 @@ class AdminPanelController extends Controller
     /**
      * @param UpdateAutoGroupsRequest $request
      * @return JsonResponse
+     *
+     * @throws Throwable
      */
     public function updateAutoGroups(UpdateAutoGroupsRequest $request): JsonResponse
     {

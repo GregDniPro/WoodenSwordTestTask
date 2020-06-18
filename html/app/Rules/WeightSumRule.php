@@ -17,8 +17,11 @@ class WeightSumRule implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
+        /** Oops overwork xD */
+        return true;
+
         $weightSum = array_sum(array_column($value, 'weight'));
         return $weightSum === 100 || $weightSum === 10;
     }
@@ -28,7 +31,7 @@ class WeightSumRule implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'The sum of weight should be 100 or 10, for now? ;)';
     }

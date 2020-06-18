@@ -9,6 +9,7 @@
     /** @var Illuminate\Database\Eloquent\Collection $allGroups */
     /** @var int $playersCount */
     $activeAutoGroupsIds = $autoGroups->pluck('group_id')->toArray();
+    $weightSum = array_sum(array_column($autoGroups->toArray(), 'weight'));
 @endphp
 
 @section('content')
@@ -54,13 +55,19 @@
                             </tr>
                         @else
                             @foreach ($autoGroups as $autoGroup)
+                                @php
+                                    $percentage = 0;
+                                    if ($weightSum > 0) {
+                                        $percentage = round((($autoGroup->weight / $weightSum ) * 100), 1);
+                                    }
+                                @endphp
                                 <tr>
                                     <td>{{ $autoGroup->id }}</td>
                                     <td>{{ $autoGroup->labelSecured }}</td>
                                     <td>
-                                        <input class="form-control auto-group-data-input" data-groupId="{{ $autoGroup->id }}" type="text" value="{{ $autoGroup->weight }}"/>
+                                        <input class="form-control auto-group-data-input" data-groupId="{{ $autoGroup->group_id }}" type="text" value="{{ $autoGroup->weight }}"/>
                                     </td>
-                                    <td>Percent</td>
+                                    <td>{{ $percentage }} %</td>
                                     <td></td>
                                 </tr>
                             @endforeach

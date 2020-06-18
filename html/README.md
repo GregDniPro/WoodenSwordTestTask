@@ -1,4 +1,2 @@
-Init commands
-- composer install
-- php artisan migrate
-- php artisan db:seed
+Init app commands list
+- `composer app:build`

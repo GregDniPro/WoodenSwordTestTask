@@ -12,7 +12,6 @@
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
-        "harvesthq/chosen": "^1.8",
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
         "ext-json": "*"
@@ -61,6 +60,13 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "app:build": [
+            "composer install -o",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan key:generate --ansi",
+            "@php artisan migrate --force",
+            "@php artisan db:seed --force"
         ]
     }
 }
