@@ -65,7 +65,7 @@
                                     <td>{{ $autoGroup->id }}</td>
                                     <td>{{ $autoGroup->labelSecured }}</td>
                                     <td>
-                                        <input class="form-control auto-group-data-input" data-groupId="{{ $autoGroup->group_id }}" type="text" value="{{ $autoGroup->weight }}"/>
+                                        <input class="form-control auto-group-data-input" data-groupId="{{ $autoGroup->group_id }}" type="number" value="{{ $autoGroup->weight }}" min="1"/>
                                     </td>
                                     <td>{{ $percentage }} %</td>
                                     <td></td>
