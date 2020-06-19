@@ -109,7 +109,7 @@
                 @if($autoGroups->isNotEmpty())
                     <form method="post" action="/adminpanel/reset-autogroups">
                         @csrf
-                        <button type="submit" class="btn btn-danger" style="float: right">RESET</button>
+                        <button type="submit" class="btn btn-danger all-data-reset-btn" style="float: right">RESET</button>
                     </form>
                 @endif
             </div>

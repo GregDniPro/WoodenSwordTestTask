@@ -6,6 +6,19 @@ jQuery(document).ready(function(){
     });
 });
 
+/*
+* Base
+*/
+$('.show-all-groups-btn').on('click', function () {
+    $('.all-groups-block').toggle();
+});
+
+$('.all-data-reset-btn').on('click', function (e) {
+    if (!confirm('R u sure?')) {
+        e.preventDefault();
+        return;
+    }
+});
 
 /*
 * Set autogroup
@@ -55,11 +68,21 @@ $('.update-autogroups-data-btn').on('click', function () {
     }
     let autogroupsData = [];
     $(".auto-group-data-input").each(function() {
+        if ($(this).attr('value') == 0) {
+            autogroupsData = [];
+            alert('Please specify weight for all groups!');
+            return false;
+        }
         autogroupsData.push({
             group_id: $(this).attr('data-groupId'),
             weight: $(this).attr('value')
         });
     });
+
+    if (!autogroupsData || autogroupsData.length <= 0) {
+        return;
+    }
+
     $.ajax({
         url: '/adminpanel/update-autogroups',
         type: 'PUT',
@@ -79,8 +102,4 @@ $('.update-autogroups-data-btn').on('click', function () {
             }
         }
     });
-});
-
-$('.show-all-groups-btn').on('click', function () {
-    $('.all-groups-block').toggle();
 });
