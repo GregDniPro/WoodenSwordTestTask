@@ -7,7 +7,6 @@ use App\Http\Requests\Admin\SetAutoGroupsRequest;
 use App\Http\Requests\Admin\UpdateAutoGroupsRequest;
 use App\Models\AutogroupsRules;
 use App\Models\Groups;
-use App\Models\Players;
 use DB;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
@@ -28,49 +27,34 @@ class AdminPanelController extends Controller
      */
     public function index()
     {
-
-//        $autoGroups = collect();
-//        $allGroups = Groups::all();
-//        if ($allGroups->isNotEmpty()) {
-//            $autoGroups = AutogroupsRules::all()->each(function (AutogroupsRules $item) use ($allGroups) {
-//                $item->labelSecured = $allGroups->where('id', '=', $item->group_id)->first()->label;
-//            });
-//        }
-//
-//        $playersCount = 0;
-//        if ($autoGroups->isNotEmpty()) {
-//            $lastAutoGroupContextCreatedAt = $autoGroups->first()->created_at;
-//            $playersCount = Players::where('created_at', '>=', $lastAutoGroupContextCreatedAt)->count('id');
-//        }
-//
-//        return view('admin.autogroups.index', [
-//            'autoGroups' => $autoGroups,
-//            'allGroups' => $allGroups,
-//            'playersCount' => $playersCount,
-//        ]);
-
+        //TODO separate service/class for this stuff?
         $allGroups = Groups::all();
-
-
-        if ($allGroups->isNotEmpty()) {
+        $autoGroups = AutogroupsRules::all();
+        if ($allGroups->isNotEmpty() && $autoGroups->isNotEmpty()) {
             $autoGroups = AutogroupsRules::all()->each(function (AutogroupsRules $item) use ($allGroups) {
-                $item->labelSecured = $allGroups->where('id', '=', $item->group_id)->first()->label;
+                $item->labelSecured = $allGroups->where('id', '=', $item->group_id)->first()->label ?? 'Undefined';
             });
         }
 
-        $playersData = Players::whereNotNull('autogroup_id')->pluck();
+        $playersData = DB::table('players')
+            ->select('autogroup_id', DB::raw('count(*) as registrations_count'))
+            ->where('created_at', '>=', $autoGroups->first()->created_at)
+            ->groupBy('autogroup_id')
+            ->get()
+            ->pluck('registrations_count', 'autogroup_id')
+            ->toArray();
 
-
-        $playersCount = 0;
-        if ($autoGroups->isNotEmpty()) {
-            $lastAutoGroupContextCreatedAt = $autoGroups->first()->created_at;
-            $playersCount = Players::where('created_at', '>=', $lastAutoGroupContextCreatedAt)->count('id');
-        }
+        $activeAutoGroupsIds = $autoGroups->pluck('group_id')->toArray();
+        $weightSum = array_sum(array_column($autoGroups->toArray(), 'weight'));
+        $totalRegistrationsSum =  array_sum($playersData);
 
         return view('admin.autogroups.index', [
             'autoGroups' => $autoGroups,
             'allGroups' => $allGroups,
-            'playersCount' => $playersCount,
+            'playersData' => $playersData,
+            'activeAutoGroupsIds' => $activeAutoGroupsIds,
+            'weightSum' => $weightSum,
+            'totalRegistrationsSum' => $totalRegistrationsSum,
         ]);
     }
 

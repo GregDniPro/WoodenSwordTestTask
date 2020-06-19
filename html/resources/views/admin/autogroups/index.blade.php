@@ -3,9 +3,10 @@
 @php
     /** @var Illuminate\Database\Eloquent\Collection $autoGroups */
     /** @var Illuminate\Database\Eloquent\Collection $allGroups */
-    /** @var int $playersCount */
-    $activeAutoGroupsIds = $autoGroups->pluck('group_id')->toArray();
-    $weightSum = array_sum(array_column($autoGroups->toArray(), 'weight'));
+    /** @var array $playersData */
+    /** @var array $activeAutoGroupsIds */
+    /** @var int $weightSum */
+    /** @var int $totalRegistrationsSum */
 @endphp
 
 @section('css')
@@ -43,8 +44,6 @@
                         <th scope="col">Weight %</th>
                         <th scope="col">Registrations</th>
                         <th scope="col">Registrations %</th>
-{{--                        Количество регистраций, которое прошло с момента последнего изменения правил--}}
-{{--                        Процент этих регистраций, от общего количества регистраций--}}
                     </tr>
                     </thead>
                     <tbody>
@@ -59,9 +58,14 @@
                         @else
                             @foreach ($autoGroups as $autoGroup)
                                 @php
-                                    $percentage = 0;
+                                    //TODO move this from view!
+                                    $weightPercentage = 0;
                                     if ($weightSum > 0) {
-                                        $percentage = round((($autoGroup->weight / $weightSum ) * 100), 1);
+                                        $weightPercentage = round((($autoGroup->weight / $weightSum ) * 100), 1);
+                                    }
+                                    $totalRegistrationsPercentage = 0;
+                                    if ($totalRegistrationsSum > 0) {
+                                        $totalRegistrationsPercentage = round((($playersData[$autoGroup->id] / $totalRegistrationsSum ) * 100), 1);
                                     }
                                 @endphp
                                 <tr>
@@ -69,24 +73,25 @@
                                     <td>
                                         <input class="form-control auto-group-data-input" data-groupId="{{ $autoGroup->group_id }}" type="number" value="{{ $autoGroup->weight }}" min="1"/>
                                     </td>
-                                    <td>{{ $percentage }} %</td>
-                                    <td>1</td>
-                                    <td>10 %</td>
+                                    <td>{{ $weightPercentage }} %</td>
+                                    <td>{{ $playersData[$autoGroup->id] ?? 0}}</td>
+                                    <td>{{ $totalRegistrationsPercentage }} %</td>
                                 </tr>
                             @endforeach
-                            <tr>
+
+                            <tr class="bg-dark">
                                 <td>Total weight</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td>{{ array_sum(array_column($autoGroups->toArray(), 'weight')) }}</td>
+                                <td>{{ $weightSum }}</td>
                             </tr>
-                            <tr>
+                            <tr class="bg-dark">
                                 <td>Total registrations</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td>{{ $playersCount }}</td>
+                                <td>{{ $totalRegistrationsSum }}</td>
                             </tr>
                         @endif
                     </tbody>
