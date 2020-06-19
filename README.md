@@ -12,3 +12,5 @@ To start the up this app you will need to go through this steps:
 P.S. Dont forget to put this text to your hosts os file: `127.0.0.1   app.local`
 
 
+TODOs
+- seems like DB design is wrong, need 3rd table aka `autogroups_users`, with timestamps and stuff.
