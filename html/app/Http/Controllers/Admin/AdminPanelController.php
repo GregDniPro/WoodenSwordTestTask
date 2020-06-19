@@ -39,21 +39,23 @@ class AdminPanelController extends Controller
         }
 
         $playersData = [];
-        $activeAutoGroupsIds = [];
         $weightSum = 0;
         $totalRegistrationsSum = 0;
-        $activeAutoGroupsIds = $autoGroups->pluck('group_id')->toArray();
+        $activeAutoGroupsIds = 0;
 
-        if ($autoGroups->isNotEmpty() && ($autoGroups->where('weight', '>', 0)->count() > 0)) {
-            $weightSum = array_sum(array_column($autoGroups->toArray(), 'weight'));
-            $playersData = DB::table('players')
-                ->select('autogroup_id', DB::raw('count(*) as registrations_count'))
-                ->where('created_at', '>=', $autoGroups->first()->created_at)
-                ->groupBy('autogroup_id')
-                ->get()
-                ->pluck('registrations_count', 'autogroup_id')
-                ->toArray();
-            $totalRegistrationsSum = array_sum($playersData);
+        if ($autoGroups->isNotEmpty()) {
+            $activeAutoGroupsIds = $autoGroups->pluck('group_id')->toArray();
+            if ($autoGroups->where('weight', '>', 0)->count() > 0) {
+                $weightSum = array_sum(array_column($autoGroups->toArray(), 'weight'));
+                $playersData = DB::table('players')
+                    ->select('autogroup_id', DB::raw('count(*) as registrations_count'))
+                    ->where('created_at', '>=', $autoGroups->first()->created_at)
+                    ->groupBy('autogroup_id')
+                    ->get()
+                    ->pluck('registrations_count', 'autogroup_id')
+                    ->toArray();
+                $totalRegistrationsSum = array_sum($playersData);
+            }
         }
 
         return view('admin.autogroups.index', [
