@@ -80,3 +80,7 @@ $('.update-autogroups-data-btn').on('click', function () {
         }
     });
 });
+
+$('.show-all-groups-btn').on('click', function () {
+    $('.all-groups-block').toggle();
+});

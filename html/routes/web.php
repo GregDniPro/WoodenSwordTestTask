@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::get('/', function () {
+    return redirect('adminpanel/groups');
+});
+
 Route::group(['namespace' => 'Admin', 'prefix' => 'adminpanel'], static function (): void {
     Route::get('/groups', 'AdminPanelController@index');
 

@@ -15,7 +15,8 @@
 @section('content')
     <div class="col-lg-12">
         <div class="row">
-            <div class="col-lg-3 text-right">
+            <div class="col-lg-3 text-left">
+                <button type="button" class="btn btn-info show-all-groups-btn">Show all groups</button>
             </div>
             <div class="col-lg-9">
                 <select data-placeholder="Auto groups selection:" class="chosen chosen-autogroups-input" multiple="true" style="width:400px;">
@@ -28,7 +29,7 @@
                 <button class="btn btn-success set-autogroups-selection-btn">Set autogroups</button>
             </div>
         </div>
-
+        <br>
         <div class="row">
             <div class="col-lg-12">
                 <div class="page-header">
@@ -37,11 +38,13 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th scope="col">#</th>
                         <th scope="col">Label</th>
                         <th scope="col">Weight</th>
-                        <th scope="col">%</th>
-                        <th scope="col"></th>
+                        <th scope="col">Weight %</th>
+                        <th scope="col">Registrations</th>
+                        <th scope="col">Registrations %</th>
+{{--                        Количество регистраций, которое прошло с момента последнего изменения правил--}}
+{{--                        Процент этих регистраций, от общего количества регистраций--}}
                     </tr>
                     </thead>
                     <tbody>
@@ -62,17 +65,24 @@
                                     }
                                 @endphp
                                 <tr>
-                                    <td>{{ $autoGroup->id }}</td>
                                     <td>{{ $autoGroup->labelSecured }}</td>
                                     <td>
                                         <input class="form-control auto-group-data-input" data-groupId="{{ $autoGroup->group_id }}" type="number" value="{{ $autoGroup->weight }}" min="1"/>
                                     </td>
                                     <td>{{ $percentage }} %</td>
-                                    <td></td>
+                                    <td>1</td>
+                                    <td>10 %</td>
                                 </tr>
                             @endforeach
                             <tr>
-                                <td>Total</td>
+                                <td>Total weight</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>{{ array_sum(array_column($autoGroups->toArray(), 'weight')) }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total registrations</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -83,10 +93,48 @@
                 </table>
             </div>
         </div>
+
         <div class="row">
             <div class="col-lg-12 text-right">
                 <button type="button" class="btn btn-info update-autogroups-data-btn">Update (will reset current registration context)</button>
                 <a href="{{ url('/adminpanel/groups') }}" class="btn btn-danger">Reset</a>
+            </div>
+        </div>
+
+        <div class="row all-groups-block" style="display: none">
+            <div class="col-lg-12">
+                <div class="page-header">
+                    <h1>All Groups</h1>
+                </div>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Label</th>
+                        <th scope="col">Created At</th>
+                        <th scope="col">Updated At</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @if($allGroups->isEmpty())
+                        <tr class="text-center">
+                            <td></td>
+                            <td><p class="text text-warning">Please create groups manually or run seeder first!</p></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    @else
+                        @foreach ($allGroups as $group)
+                            <tr>
+                                <td>{{ $group->id }}</td>
+                                <td @if(in_array($group->id, $activeAutoGroupsIds)) class="bg-success" @endif>{{ $group->label }}</td>
+                                <td>{{ $group->created_at }}</td>
+                                <td>{{ $group->updated_at }}</td>
+                            </tr>
+                        @endforeach
+                    @endif
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

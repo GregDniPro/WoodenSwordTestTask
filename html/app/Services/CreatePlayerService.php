@@ -52,7 +52,7 @@ class CreatePlayerService
     private function setAutoGroup(Players $player): void
     {
         $currentContextAutoGroups = AutogroupsRules::where('weight', '>', 0)
-            ->pluck('weight', 'group_id')
+            ->pluck('weight', 'id')
             ->toArray();
         if (!empty($currentContextAutoGroups)) {
             $player->update(['autogroup_id' => $this->getRandomWeightedElement($currentContextAutoGroups)]);
@@ -64,8 +64,6 @@ class CreatePlayerService
      *
      * @param array $weightedValues
      * @return int|null
-     *
-     * P.S. Sry <3
      */
     private function getRandomWeightedElement(array $weightedValues)
     {

@@ -28,15 +28,43 @@ class AdminPanelController extends Controller
      */
     public function index()
     {
+
+//        $autoGroups = collect();
+//        $allGroups = Groups::all();
+//        if ($allGroups->isNotEmpty()) {
+//            $autoGroups = AutogroupsRules::all()->each(function (AutogroupsRules $item) use ($allGroups) {
+//                $item->labelSecured = $allGroups->where('id', '=', $item->group_id)->first()->label;
+//            });
+//        }
+//
+//        $playersCount = 0;
+//        if ($autoGroups->isNotEmpty()) {
+//            $lastAutoGroupContextCreatedAt = $autoGroups->first()->created_at;
+//            $playersCount = Players::where('created_at', '>=', $lastAutoGroupContextCreatedAt)->count('id');
+//        }
+//
+//        return view('admin.autogroups.index', [
+//            'autoGroups' => $autoGroups,
+//            'allGroups' => $allGroups,
+//            'playersCount' => $playersCount,
+//        ]);
+
         $allGroups = Groups::all();
-        $autoGroups = AutogroupsRules::all()->each(function (AutogroupsRules $item) use ($allGroups) {
-            $item->labelSecured = $allGroups->where('id', '=', $item->group_id)->first()->label;
-        });
+
+
+        if ($allGroups->isNotEmpty()) {
+            $autoGroups = AutogroupsRules::all()->each(function (AutogroupsRules $item) use ($allGroups) {
+                $item->labelSecured = $allGroups->where('id', '=', $item->group_id)->first()->label;
+            });
+        }
+
+        $playersData = Players::whereNotNull('autogroup_id')->pluck();
+
 
         $playersCount = 0;
         if ($autoGroups->isNotEmpty()) {
-            $autoGroupsWereCreatedAt = $autoGroups->first()->created_at;
-            $playersCount = Players::where('created_at', '>=', $autoGroupsWereCreatedAt)->count('id');
+            $lastAutoGroupContextCreatedAt = $autoGroups->first()->created_at;
+            $playersCount = Players::where('created_at', '>=', $lastAutoGroupContextCreatedAt)->count('id');
         }
 
         return view('admin.autogroups.index', [

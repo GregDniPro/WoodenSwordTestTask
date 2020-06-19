@@ -5,7 +5,7 @@ use Illuminate\Database\Seeder;
 
 class GroupsSeeder extends Seeder
 {
-    private const DUMMY_CONST_COUNT = 30;
+    private const DUMMY_CONST_COUNT = 10;
 
     /**
      * Run the database seeds.
