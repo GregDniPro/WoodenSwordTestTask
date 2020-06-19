@@ -42,8 +42,9 @@ class AdminPanelController extends Controller
         $activeAutoGroupsIds = [];
         $weightSum = 0;
         $totalRegistrationsSum = 0;
+        $activeAutoGroupsIds = $autoGroups->pluck('group_id')->toArray();
+
         if ($autoGroups->isNotEmpty() && ($autoGroups->where('weight', '>', 0)->count() > 0)) {
-            $activeAutoGroupsIds = $autoGroups->pluck('group_id')->toArray();
             $weightSum = array_sum(array_column($autoGroups->toArray(), 'weight'));
             $playersData = DB::table('players')
                 ->select('autogroup_id', DB::raw('count(*) as registrations_count'))
