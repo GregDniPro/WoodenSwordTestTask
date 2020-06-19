@@ -39,9 +39,9 @@ class AdminPanelController extends Controller
         }
 
         $playersData = [];
+        $activeAutoGroupsIds = [];
         $weightSum = 0;
         $totalRegistrationsSum = 0;
-        $activeAutoGroupsIds = 0;
 
         if ($autoGroups->isNotEmpty()) {
             $activeAutoGroupsIds = $autoGroups->pluck('group_id')->toArray();
