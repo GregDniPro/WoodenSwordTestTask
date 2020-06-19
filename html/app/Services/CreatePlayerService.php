@@ -65,7 +65,7 @@ class CreatePlayerService
      * @param array $weightedValues
      * @return int|null
      */
-    private function getRandomWeightedElement(array $weightedValues)
+    private function getRandomWeightedElement(array $weightedValues): ?int
     {
         $rand = mt_rand(1, (int) array_sum($weightedValues));
 

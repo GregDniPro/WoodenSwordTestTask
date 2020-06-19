@@ -18,6 +18,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                 </div>
+                <p>Use <code>{{ env('APP_URL') }}/api/create</code> endpoint to create new users.</p>
             </div>
         </div>
         <div class="container">
