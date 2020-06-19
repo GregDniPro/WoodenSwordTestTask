@@ -58,14 +58,17 @@
                         @else
                             @foreach ($autoGroups as $autoGroup)
                                 @php
-                                    //TODO move this from view!
+                                    //TODO move this script from view! (maybe to some TmpEloquentModel or something like that
                                     $weightPercentage = 0;
                                     if ($weightSum > 0) {
                                         $weightPercentage = round((($autoGroup->weight / $weightSum ) * 100), 1);
                                     }
                                     $totalRegistrationsPercentage = 0;
                                     if ($totalRegistrationsSum > 0) {
-                                        $totalRegistrationsPercentage = round((($playersData[$autoGroup->id] / $totalRegistrationsSum ) * 100), 1);
+                                        $autoGroupRegistrations = $playersData[$autoGroup->id] ?? 0;
+                                        if ($autoGroupRegistrations > 0) {
+                                            $totalRegistrationsPercentage = round((($playersData[$autoGroup->id] / $totalRegistrationsSum ) * 100), 1);
+                                        }
                                     }
                                 @endphp
                                 <tr>
@@ -102,7 +105,13 @@
         <div class="row">
             <div class="col-lg-12 text-right">
                 <button type="button" class="btn btn-info update-autogroups-data-btn">Update (will reset current registration context)</button>
-                <a href="{{ url('/adminpanel/groups') }}" class="btn btn-danger">Reset</a>
+                <br><br>
+                @if($autoGroups->isNotEmpty())
+                    <form method="post" action="/adminpanel/reset-autogroups">
+                        @csrf
+                        <button type="submit" class="btn btn-danger" style="float: right">RESET</button>
+                    </form>
+                @endif
             </div>
         </div>
 

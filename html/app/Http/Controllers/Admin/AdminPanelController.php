@@ -10,7 +10,9 @@ use App\Models\Groups;
 use DB;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
 use Session;
 use Throwable;
@@ -27,26 +29,30 @@ class AdminPanelController extends Controller
      */
     public function index()
     {
-        //TODO separate service/class for this stuff?
         $allGroups = Groups::all();
         $autoGroups = AutogroupsRules::all();
-        if ($allGroups->isNotEmpty() && $autoGroups->isNotEmpty()) {
-            $autoGroups = AutogroupsRules::all()->each(function (AutogroupsRules $item) use ($allGroups) {
+        if ($allGroups->isNotEmpty()) {
+            $autoGroups->each(function (AutogroupsRules $item) use ($allGroups) {
                 $item->labelSecured = $allGroups->where('id', '=', $item->group_id)->first()->label ?? 'Undefined';
             });
         }
 
-        $playersData = DB::table('players')
-            ->select('autogroup_id', DB::raw('count(*) as registrations_count'))
-            ->where('created_at', '>=', $autoGroups->first()->created_at)
-            ->groupBy('autogroup_id')
-            ->get()
-            ->pluck('registrations_count', 'autogroup_id')
-            ->toArray();
-
-        $activeAutoGroupsIds = $autoGroups->pluck('group_id')->toArray();
-        $weightSum = array_sum(array_column($autoGroups->toArray(), 'weight'));
-        $totalRegistrationsSum =  array_sum($playersData);
+        $playersData = [];
+        $activeAutoGroupsIds = [];
+        $weightSum = 0;
+        $totalRegistrationsSum = 0;
+        if ($autoGroups->isNotEmpty()) {
+            $activeAutoGroupsIds = $autoGroups->pluck('group_id')->toArray();
+            $weightSum = array_sum(array_column($autoGroups->toArray(), 'weight'));
+            $playersData = DB::table('players')
+                ->select('autogroup_id', DB::raw('count(*) as registrations_count'))
+                ->where('created_at', '>=', $autoGroups->first()->created_at)
+                ->groupBy('autogroup_id')
+                ->get()
+                ->pluck('registrations_count', 'autogroup_id')
+                ->toArray();
+            $totalRegistrationsSum = array_sum($playersData);
+        }
 
         return view('admin.autogroups.index', [
             'autoGroups' => $autoGroups,
@@ -74,7 +80,7 @@ class AdminPanelController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => Response::HTTP_I_AM_A_TEAPOT,
-                'message' => (string) $e,
+                'message' => (string)$e,
             ], Response::HTTP_I_AM_A_TEAPOT);
         }
         DB::commit();
@@ -102,7 +108,7 @@ class AdminPanelController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => Response::HTTP_I_AM_A_TEAPOT,
-                'message' => (string) $e,
+                'message' => (string)$e,
             ], Response::HTTP_I_AM_A_TEAPOT);
         }
         DB::commit();
@@ -112,5 +118,14 @@ class AdminPanelController extends Controller
             'status' => Response::HTTP_OK,
             'message' => 'Autogroups were updated successfully!',
         ], Response::HTTP_OK);
+    }
+
+    /**
+     * @return RedirectResponse|Redirector
+     */
+    public function resetAutoGroups()
+    {
+        AutogroupsRules::truncate();
+        return redirect('/adminpanel/groups');
     }
 }

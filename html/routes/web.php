@@ -11,4 +11,5 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'adminpanel'], static function
 
     Route::put('/set-autogroups', 'AdminPanelController@setAutoGroups');
     Route::put('/update-autogroups', 'AdminPanelController@updateAutoGroups');
+    Route::post('/reset-autogroups', 'AdminPanelController@resetAutoGroups');
 });
