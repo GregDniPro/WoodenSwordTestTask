@@ -39,6 +39,7 @@ $('.set-autogroups-selection-btn').on('click', function () {
         alert('You need to choose atleast 1 group!');
         return;
     }
+
     $.ajax({
         url: '/adminpanel/set-autogroups',
         type: 'PUT',
@@ -62,10 +63,12 @@ $('.set-autogroups-selection-btn').on('click', function () {
 $(".auto-group-data-input").on('change', function () {
     $(this).attr('value', $(this).val());
 });
+
 $('.update-autogroups-data-btn').on('click', function () {
     if (!confirm('R u sure?')) {
         return;
     }
+
     let autogroupsData = [];
     $(".auto-group-data-input").each(function() {
         if ($(this).attr('value') == 0) {
