@@ -29,7 +29,7 @@ class AutogroupsService
         $weightSum = 0;
         $totalRegistrationsSum = 0;
         $activeAutoGroupsIds = [];
-        if ($autoGroups->isNotEmpty()) {
+        if ($autoGroups->isNotEmpty()) { //TODO rework to early exit
             $activeAutoGroupsIds = $autoGroups->pluck('group_id')->toArray();
             if ($autoGroups->where('weight', '>', 0)->count() > 0) {
                 $weightSum = array_sum(array_column($autoGroups->toArray(), 'weight'));
