@@ -57,20 +57,6 @@
                             </tr>
                         @else
                             @foreach ($autoGroups as $autoGroup)
-                                @php
-                                    //TODO move this script from view! (maybe to some TmpEloquentModel or something like that
-                                    //$weightPercentage = 0;
-                                    //if ($weightSum > 0) {
-                                    //    $weightPercentage = round((($autoGroup->weight / $weightSum ) * 100), 1);
-                                    //}
-                                    //$totalRegistrationsPercentage = 0;
-                                    //if ($totalRegistrationsSum > 0) {
-                                    //    $autoGroupRegistrations = $playersData[$autoGroup->id] ?? 0;
-                                    //    if ($autoGroupRegistrations > 0) {
-                                    //        $totalRegistrationsPercentage = round((($playersData[$autoGroup->id] / $totalRegistrationsSum ) * 100), 1);
-                                    //    }
-                                    //}
-                                @endphp
                                 <tr>
                                     <td>{{ $autoGroup->labelSecured }}</td>
                                     <td>

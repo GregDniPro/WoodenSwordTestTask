@@ -13,7 +13,11 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class AutogroupsService
 {
-    public function handle(Collection $allGroups): array
+    /**
+     * @param Collection $allGroups
+     * @return array
+     */
+    public function getIndexData(Collection $allGroups): array
     {
         $autoGroups = AutogroupsRules::all();
         if ($allGroups->isNotEmpty()) {
@@ -22,10 +26,9 @@ class AutogroupsService
             });
         }
 
-        $activeAutoGroupsIds = [];
         $weightSum = 0;
         $totalRegistrationsSum = 0;
-
+        $activeAutoGroupsIds = [];
         if ($autoGroups->isNotEmpty()) {
             $activeAutoGroupsIds = $autoGroups->pluck('group_id')->toArray();
             if ($autoGroups->where('weight', '>', 0)->count() > 0) {
@@ -53,6 +56,12 @@ class AutogroupsService
         return [$autoGroups, $activeAutoGroupsIds, $weightSum, $totalRegistrationsSum];
     }
 
+    /**
+     * @param int $weightSum
+     * @param AutogroupsRules $autoGroupRule
+     *
+     * @return false|float|int
+     */
     private function getAutogroupWeightPercentage(int $weightSum, AutogroupsRules $autoGroupRule)
     {
         $weightPercentage = 0;
@@ -62,6 +71,13 @@ class AutogroupsService
         return $weightPercentage;
     }
 
+    /**
+     * @param int $totalRegistrationsSum
+     * @param AutogroupsRules $autoGroupRule
+     * @param array $playersData
+     *
+     * @return false|float|int
+     */
     private function getTotalAutogroupRegistrationsPercentage(
         int $totalRegistrationsSum,
         AutogroupsRules $autoGroupRule,
