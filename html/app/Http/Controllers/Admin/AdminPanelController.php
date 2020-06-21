@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\SetAutoGroupsRequest;
 use App\Http\Requests\Admin\UpdateAutoGroupsRequest;
 use App\Models\AutogroupsRules;
 use App\Models\Groups;
+use App\Services\AutogroupsService;
 use DB;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
@@ -27,41 +28,44 @@ class AdminPanelController extends Controller
     /**
      * @return Factory|View
      */
-    public function index()
+    public function index(AutogroupsService $autogroupsService)
     {
-        //TODO possibly should move it to some separate Component/Service or... need advice xD or repository
         $allGroups = Groups::all();
-        $autoGroups = AutogroupsRules::all();
-        if ($allGroups->isNotEmpty()) {
-            $autoGroups->each(function (AutogroupsRules $item) use ($allGroups) {
-                $item->labelSecured = $allGroups->where('id', '=', $item->group_id)->first()->label ?? 'Undefined';
-            });
-        }
-
-        $playersData = [];
-        $activeAutoGroupsIds = [];
-        $weightSum = 0;
-        $totalRegistrationsSum = 0;
-
-        if ($autoGroups->isNotEmpty()) {
-            $activeAutoGroupsIds = $autoGroups->pluck('group_id')->toArray();
-            if ($autoGroups->where('weight', '>', 0)->count() > 0) {
-                $weightSum = array_sum(array_column($autoGroups->toArray(), 'weight'));
-                $playersData = DB::table('players')
-                    ->select('autogroup_id', DB::raw('count(*) as registrations_count'))
-                    ->where('created_at', '>=', $autoGroups->first()->created_at)
-                    ->groupBy('autogroup_id')
-                    ->get()
-                    ->pluck('registrations_count', 'autogroup_id')
-                    ->toArray();
-                $totalRegistrationsSum = array_sum($playersData);
-            }
-        }
+        list($autoGroups, $activeAutoGroupsIds, $weightSum, $totalRegistrationsSum) = $autogroupsService->handle($allGroups);
+        //TODO possibly should move it to some separate Component/Service or... need advice xD or repository
+//        $allGroups = Groups::all();
+//        $autoGroups = AutogroupsRules::all();
+//        if ($allGroups->isNotEmpty()) {
+//            $autoGroups->each(function (AutogroupsRules $item) use ($allGroups) {
+//                $item->labelSecured = $allGroups->where('id', '=', $item->group_id)->first()->label ?? 'Undefined';
+//            });
+//        }
+//
+//        $playersData = [];
+//        $activeAutoGroupsIds = [];
+//        $weightSum = 0;
+//        $totalRegistrationsSum = 0;
+//
+//        if ($autoGroups->isNotEmpty()) {
+//            $activeAutoGroupsIds = $autoGroups->pluck('group_id')->toArray();
+//            if ($autoGroups->where('weight', '>', 0)->count() > 0) {
+//                //TODO add weight% and registration% columns logic here
+//
+//                $weightSum = array_sum(array_column($autoGroups->toArray(), 'weight'));
+//                $playersData = DB::table('players')
+//                    ->select('autogroup_id', DB::raw('count(*) as registrations_count'))
+//                    ->where('created_at', '>=', $autoGroups->first()->created_at)
+//                    ->groupBy('autogroup_id')
+//                    ->get()
+//                    ->pluck('registrations_count', 'autogroup_id')
+//                    ->toArray();
+//                $totalRegistrationsSum = array_sum($playersData);
+//            }
+//        }
 
         return view('admin.autogroups.index', [
-            'autoGroups' => $autoGroups,
             'allGroups' => $allGroups,
-            'playersData' => $playersData,
+            'autoGroups' => $autoGroups,
             'activeAutoGroupsIds' => $activeAutoGroupsIds,
             'weightSum' => $weightSum,
             'totalRegistrationsSum' => $totalRegistrationsSum,

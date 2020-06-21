@@ -1,8 +1,8 @@
 @extends('admin.layout')
 
 @php
-    /** @var Illuminate\Database\Eloquent\Collection $autoGroups */
-    /** @var Illuminate\Database\Eloquent\Collection $allGroups */
+    /** @var \App\Models\AutogroupsRules[] $autoGroups */
+    /** @var \App\Models\Groups[] $allGroups */
     /** @var array $playersData */
     /** @var array $activeAutoGroupsIds */
     /** @var int $weightSum */
@@ -59,26 +59,26 @@
                             @foreach ($autoGroups as $autoGroup)
                                 @php
                                     //TODO move this script from view! (maybe to some TmpEloquentModel or something like that
-                                    $weightPercentage = 0;
-                                    if ($weightSum > 0) {
-                                        $weightPercentage = round((($autoGroup->weight / $weightSum ) * 100), 1);
-                                    }
-                                    $totalRegistrationsPercentage = 0;
-                                    if ($totalRegistrationsSum > 0) {
-                                        $autoGroupRegistrations = $playersData[$autoGroup->id] ?? 0;
-                                        if ($autoGroupRegistrations > 0) {
-                                            $totalRegistrationsPercentage = round((($playersData[$autoGroup->id] / $totalRegistrationsSum ) * 100), 1);
-                                        }
-                                    }
+                                    //$weightPercentage = 0;
+                                    //if ($weightSum > 0) {
+                                    //    $weightPercentage = round((($autoGroup->weight / $weightSum ) * 100), 1);
+                                    //}
+                                    //$totalRegistrationsPercentage = 0;
+                                    //if ($totalRegistrationsSum > 0) {
+                                    //    $autoGroupRegistrations = $playersData[$autoGroup->id] ?? 0;
+                                    //    if ($autoGroupRegistrations > 0) {
+                                    //        $totalRegistrationsPercentage = round((($playersData[$autoGroup->id] / $totalRegistrationsSum ) * 100), 1);
+                                    //    }
+                                    //}
                                 @endphp
                                 <tr>
                                     <td>{{ $autoGroup->labelSecured }}</td>
                                     <td>
                                         <input class="form-control auto-group-data-input" data-groupId="{{ $autoGroup->group_id }}" type="number" value="{{ $autoGroup->weight }}" min="1"/>
                                     </td>
-                                    <td>{{ $weightPercentage }} %</td>
-                                    <td>{{ $playersData[$autoGroup->id] ?? 0}}</td>
-                                    <td>{{ $totalRegistrationsPercentage }} %</td>
+                                    <td>{{ $autoGroup->weightPercentageCalculated }} %</td>
+                                    <td>{{ $autoGroup->totalRegistrationsCalculated }}</td>
+                                    <td>{{ $autoGroup->totalRegistrationsPercentageCalculated }} %</td>
                                 </tr>
                             @endforeach
 

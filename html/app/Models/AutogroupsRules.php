@@ -17,6 +17,9 @@ use Illuminate\Support\Carbon;
  * @property int $group_id
  * @property int $weight
  * @property string $labelSecured
+ * @property int $weightPercentageCalculated
+ * @property int $totalRegistrationsCalculated
+ * @property int $totalRegistrationsPercentageCalculated
  * @property Carbon|null $created_at
  * @method static Builder|Players newModelQuery()
  * @method static Builder|Players newQuery()
