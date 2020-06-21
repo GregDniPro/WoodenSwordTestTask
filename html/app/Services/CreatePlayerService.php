@@ -67,6 +67,7 @@ class CreatePlayerService
      */
     private function getRandomWeightedElement(array $weightedValues): ?int
     {
+        //TODO db equal final fill?
         $rand = mt_rand(1, (int) array_sum($weightedValues));
 
         foreach ($weightedValues as $key => $value) {

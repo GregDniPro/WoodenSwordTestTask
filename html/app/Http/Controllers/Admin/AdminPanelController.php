@@ -29,7 +29,7 @@ class AdminPanelController extends Controller
      */
     public function index()
     {
-        //TODO possibly should move it to some separate Component/Service or... need advice xD
+        //TODO possibly should move it to some separate Component/Service or... need advice xD or repository
         $allGroups = Groups::all();
         $autoGroups = AutogroupsRules::all();
         if ($allGroups->isNotEmpty()) {
